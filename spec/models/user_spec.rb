@@ -2,7 +2,9 @@ require 'spec_helper'
 
 describe User do
   before { 
-    @user = User.new
+    @data = {username: "username", name: "name", email: "mail@example.com", password: "qwerty", 
+             password_confirmation: "qwerty", type: 1, status: true}
+    @user = User.create! @data
   }
 
 
@@ -42,21 +44,22 @@ describe User do
     end
     
     pending "Guarda publicacion" do
-      publicacion = mock_model("Publicacion")
-      @user.guardar_publicacion(publicacion)
-      @user.publicaciones_guardadas.size.should equal 1
+      post = mock_model("Post")
+      @user.save_post(post)
+
+      @user.posts_saved.size.should == 1
     end
 
     pending "Agregar comentario a una publicacion" do
-      publicacion = mock_model("Publicacion")
-      comentario = mock_model("Comentario")
-      publicacion.stub!(:agregar_comentario).with(comentario).and_return(comentario)
+      post = mock_model("Post")
+      comment = mock_model("Comment")
 
-      @user.comentar(publicacion,comentario).should equal comentario
+      post.should_recieve(:add_comment).with(comment)
+      @user.comment(post, comment)
     end
 
     pending "Calificar una publicacion" do
-      publicacion = mock_model("Publicacion")
+      publicacion = mock("Publicacion")
       publicacion.stub!(:calificar).with(5).and_return(5)
 
       @user.calificar(publicacion,5).should == 5 
