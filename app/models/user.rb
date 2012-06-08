@@ -21,11 +21,18 @@ class User < ActiveRecord::Base
 
   has_many :relations
   has_many :subscriptions, :source => :advertiser, :through => :relations, :class_name => "User", :foreign_key => "advertiser_id"
+
+  has_many :posts
   
-  VISITANTE = 3
+  VISITOR = 3
+  ADVERTISER = 2
   
-  def visitante?
-    self.type == VISITANTE
+  def visitor?
+    self.type == VISITOR
+  end
+
+  def advertiser?
+    self.type == ADVERTISER
   end
 
   def save_post(post)
@@ -42,5 +49,13 @@ class User < ActiveRecord::Base
 
   def follow(user)
     subscriptions << user
+  end
+
+  def post(data)
+    self.posts << Post.new(data)
+  end
+
+  def update_post(post,data)
+    post.update_attributes(data)
   end
 end

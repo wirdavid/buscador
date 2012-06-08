@@ -31,12 +31,12 @@ describe User do
     before {@user.type = 3}
     
     it "Con tipo 3 es un visitante" do
-      @user.should be_visitante
+      @user.should be_visitor
     end
 
     it "Con tipo diferente a 3 no es un visitante" do
       @user.type = 1
-      @user.should_not be_visitante
+      @user.should_not be_visitor
     end
 
     it "Tiene publicaciones guardadas" do
@@ -76,5 +76,42 @@ describe User do
     end
 
   end
+
+  context "Anunciante" do
+    before {@user.type = 2}
     
+    it "Con tipo 2 es un visitante" do
+      @user.should be_advertiser
+    end
+
+    it "Con tipo diferente a 3 no es un visitante" do
+      @user.type = 3
+      @user.should_not be_advertiser
+    end
+
+    it "Tiene publicaciones" do
+      @user.should respond_to(:posts)
+    end
+
+    it "Debe poder crear una publicacion" do
+      mock_model("Post")
+      data = {title: "title"}
+      Post.should_receive(:new).with(data)
+      Post.should_receive(:transaction)
+      
+      @user.post(data)
+    end
+
+    it "Debe poder modificar una publicacion" do
+      post =mock_model("Post")
+      Post.stub!(:transaction).and_return([post])
+      @user.posts << post
+      data = {title: "title"}
+      
+      post.should_receive(:update_attributes).with(data)
+      @user.update_post(post,data)
+
+    end
+
+  end
 end
