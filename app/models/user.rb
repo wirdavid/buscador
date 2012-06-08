@@ -18,6 +18,9 @@ class User < ActiveRecord::Base
   # relations
   has_many :saved_posts
   has_many :posts_saved, :source => :post, :through => :saved_posts
+
+  has_many :relations
+  has_many :subscriptions, :source => :advertiser, :through => :relations, :class_name => "User", :foreign_key => "advertiser_id"
   
   VISITANTE = 3
   
@@ -26,9 +29,18 @@ class User < ActiveRecord::Base
   end
 
   def save_post(post)
+    self.posts_saved << post
   end
 
   def comment(post,comment)
     post.add_comment(comment)
+  end
+
+  def rate(post,value)
+    post.rate(value)
+  end
+
+  def follow(user)
+    subscriptions << user
   end
 end

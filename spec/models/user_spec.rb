@@ -43,37 +43,36 @@ describe User do
       @user.should respond_to(:posts_saved)
     end
     
-    pending "Guarda publicacion" do
+    it "Guarda publicacion" do
       post = mock_model("Post")
+      Post.should_receive(:transaction)
       @user.save_post(post)
-
-      @user.posts_saved.size.should == 1
     end
 
-    pending "Agregar comentario a una publicacion" do
+    it "Agregar comentario a una publicacion" do
       post = mock_model("Post")
       comment = mock_model("Comment")
 
-      post.should_recieve(:add_comment).with(comment)
+      post.should_receive(:add_comment).with(comment)
       @user.comment(post, comment)
     end
 
-    pending "Calificar una publicacion" do
-      publicacion = mock("Publicacion")
-      publicacion.stub!(:calificar).with(5).and_return(5)
+    it "Calificar una publicacion" do
+      post = mock("Post")
+      post.stub!(:rate).with(5).and_return(5)
 
-      @user.calificar(publicacion,5).should == 5 
+      @user.rate(post,5).should == 5 
     end
 
-    pending "Debe poder suscribirse a un anunciante" do
-      @data.update({username:"otherusername", correo:"other@example.com"})
-      otro_user = Usuario.new(@data)
+    it "Debe poder suscribirse a un anunciante" do
+      @data.update({username:"otherusername", email:"other@example.com"})
+      otro_user = User.new(@data)
 
       @user.save
       otro_user.save
 
-      @user.seguir(otro_usuario)
-      @user.suscripciones.count.should == 1
+      @user.follow(otro_user)
+      @user.subscriptions.count.should == 1
     end
 
   end
